@@ -10,7 +10,9 @@
   "dependencies": {
     "core-js": "^3.8.3",
     "element-plus": "^2.7.5",
-    "vue": "^3.2.13"
+    "prismjs": "^1.29.0",
+    "vue": "^3.2.13",
+    "vue-router": "^4.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
