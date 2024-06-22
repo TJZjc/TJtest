@@ -6,6 +6,7 @@ import exthree from "@/components/exthree.vue";
 import exfour from "@/components/exfour.vue";
 import exfive from "@/components/exfive.vue";
 import exsix from "@/components/exsix.vue";
+import autoTest from "@/components/autoTest.vue";
 
 const routes = [
     {
@@ -33,8 +34,12 @@ const routes = [
         component: exfive
     },
     {
-        path:'/',
+        path:'/ex6',
         component: exsix
+    },
+    {
+        path:'/',
+        component: autoTest
     },
 ]
 
