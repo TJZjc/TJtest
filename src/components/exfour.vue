@@ -24,21 +24,22 @@
             </el-header>
             <el-main>
               <el-menu
-                  default-active="2"
+                  default-active="1-4"
                   class="el-menu-vertical-demo"
                   style="display: flex;flex-wrap: wrap;border-right: 0"
+                  @select="handleSelect"
               >
                 <el-sub-menu index="1">
                   <template #title>
-                    <span style="font-size: large">Navigator One</span>
+                    <span style="font-size: large">作业测试</span>
                   </template>
                   <el-menu-item-group>
-                    <el-menu-item index="1-1">item one</el-menu-item>
-                    <el-menu-item index="1-2">item two</el-menu-item>
-                    <el-menu-item index="1-3">item two</el-menu-item>
-                    <el-menu-item index="1-4">item two</el-menu-item>
-                    <el-menu-item index="1-5">item two</el-menu-item>
-                    <el-menu-item index="1-6">item two</el-menu-item>
+                    <el-menu-item index="1-1">判断三角形类型</el-menu-item>
+                    <el-menu-item index="1-2">万年历问题</el-menu-item>
+                    <el-menu-item index="1-3">电脑销售问题</el-menu-item>
+                    <el-menu-item index="1-4">电信收费问题</el-menu-item>
+                    <el-menu-item index="1-5">程序图构建</el-menu-item>
+                    <el-menu-item index="1-6">佣金值计算</el-menu-item>
                   </el-menu-item-group>
                 </el-sub-menu>
                 <el-menu-item index="2">
@@ -133,10 +134,10 @@
                         label-position="top"
                     >
                       <el-form-item label="通话时间">
-                        <el-input/>
+                        <el-input v-model.number="form.side1"/>
                       </el-form-item>
                       <el-form-item label="不按时缴费次数">
-                        <el-input/>
+                        <el-input v-model.number="form.side2"/>
                       </el-form-item>
                     </el-form>
                     <template #footer>
@@ -146,9 +147,9 @@
                           label-position="top"
                       >
                         <el-form-item label="实际通话费用">
-                          <el-input/>
+                          <el-input v-model="money"/>
                         </el-form-item>
-                        <el-button type="success" plain style="margin-top: 15px">Info</el-button>
+                        <el-button type="success"  @click="submitForm" plain style="margin-top: 15px">Submit</el-button>
                       </el-form>
                     </template>
                   </el-card>
@@ -164,10 +165,47 @@
 
 
 <script>
+import axios from "axios";
+import { ElMessage } from 'element-plus';
 export default {
   name: 'ExFour',
   props: {
     msg: String
+  },
+  data() {
+    return {
+      form: {
+        side1: '',
+        side2: '',
+      },
+      money: '',
+    };
+  },
+  methods: {
+    async submitForm() {
+      try {
+        const formData = new FormData();
+        formData.append('time', this.form.side1);
+        formData.append('badtimes', this.form.side2);
+        const response = await axios.post('http://8.130.47.29:8000/Telecom/', formData,{
+           headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+        });
+        console.log('Response data:', response.data);
+        this.money = response.data.result;
+        const message = response.data.message;
+        const result = parseFloat(response.data.result)
+        if(result<0)
+        {
+          ElMessage.warning(message)
+        }else {
+          ElMessage.success(message);
+        }
+      } catch (error) {
+        console.error('Error submitting form:', error);
+      }
+    }
   }
 }
 </script>

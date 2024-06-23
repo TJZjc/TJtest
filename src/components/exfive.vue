@@ -24,21 +24,22 @@
             </el-header>
             <el-main>
               <el-menu
-                  default-active="2"
+                  default-active="1-5"
                   class="el-menu-vertical-demo"
                   style="display: flex;flex-wrap: wrap;border-right: 0"
+                  @select="handleSelect"
               >
                 <el-sub-menu index="1">
                   <template #title>
-                    <span style="font-size: large">Navigator One</span>
+                    <span style="font-size: large">作业测试</span>
                   </template>
                   <el-menu-item-group>
-                    <el-menu-item index="1-1">item one</el-menu-item>
-                    <el-menu-item index="1-2">item two</el-menu-item>
-                    <el-menu-item index="1-3">item two</el-menu-item>
-                    <el-menu-item index="1-4">item two</el-menu-item>
-                    <el-menu-item index="1-5">item two</el-menu-item>
-                    <el-menu-item index="1-6">item two</el-menu-item>
+                    <el-menu-item index="1-1">判断三角形类型</el-menu-item>
+                    <el-menu-item index="1-2">万年历问题</el-menu-item>
+                    <el-menu-item index="1-3">电脑销售问题</el-menu-item>
+                    <el-menu-item index="1-4">电信收费问题</el-menu-item>
+                    <el-menu-item index="1-5">程序图构建</el-menu-item>
+                    <el-menu-item index="1-6">佣金值计算</el-menu-item>
                   </el-menu-item-group>
                 </el-sub-menu>
                 <el-menu-item index="2">

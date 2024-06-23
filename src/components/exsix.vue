@@ -24,21 +24,22 @@
             </el-header>
             <el-main>
               <el-menu
-                  default-active="2"
+                  default-active="1-6"
                   class="el-menu-vertical-demo"
                   style="display: flex;flex-wrap: wrap;border-right: 0"
+                  @select="handleSelect"
               >
                 <el-sub-menu index="1">
                   <template #title>
-                    <span style="font-size: large">Navigator One</span>
+                    <span style="font-size: large">作业测试</span>
                   </template>
                   <el-menu-item-group>
-                    <el-menu-item index="1-1">item one</el-menu-item>
-                    <el-menu-item index="1-2">item two</el-menu-item>
-                    <el-menu-item index="1-3">item two</el-menu-item>
-                    <el-menu-item index="1-4">item two</el-menu-item>
-                    <el-menu-item index="1-5">item two</el-menu-item>
-                    <el-menu-item index="1-6">item two</el-menu-item>
+                    <el-menu-item index="1-1">判断三角形类型</el-menu-item>
+                    <el-menu-item index="1-2">万年历问题</el-menu-item>
+                    <el-menu-item index="1-3">电脑销售问题</el-menu-item>
+                    <el-menu-item index="1-4">电信收费问题</el-menu-item>
+                    <el-menu-item index="1-5">程序图构建</el-menu-item>
+                    <el-menu-item index="1-6">佣金值计算</el-menu-item>
                   </el-menu-item-group>
                 </el-sub-menu>
                 <el-menu-item index="2">
@@ -95,13 +96,13 @@
                         label-position="top"
                     >
                       <el-form-item label="年销售额">
-                        <el-input/>
+                        <el-input v-model.number="form.side1"/>
                       </el-form-item>
                       <el-form-item label="请假天数">
-                        <el-input/>
+                        <el-input v-model.number="form.side2"/>
                       </el-form-item>
                       <el-form-item label="现金到账">
-                        <el-input  />
+                        <el-input v-model.number="form.side3"/>
                       </el-form-item>
                     </el-form>
                     <template #footer>
@@ -111,12 +112,12 @@
                           label-position="top"
                       >
                         <el-form-item label="佣金系数">
-                          <el-input/>
+                          <el-input v-model="factor" readonly/>
                         </el-form-item>
                         <el-form-item label="佣金值">
-                          <el-input/>
+                          <el-input v-model="salary" readonly/>
                         </el-form-item>
-                        <el-button type="warning" plain>Primary</el-button>
+                        <el-button type="warning"  @click="submitForm" plain>Submit</el-button>
                       </el-form>
                     </template>
                   </el-card>
@@ -132,10 +133,51 @@
 
 
 <script>
+import axios from "axios";
+import { ElMessage } from 'element-plus';
 export default {
   name: 'ExSix',
   props: {
     msg: String
+  },
+  data() {
+    return {
+      form: {
+        side1: '',
+        side2: '',
+        side3: ''
+      },
+      factor: '',
+      salary:''
+    };
+  },
+  methods: {
+    async submitForm() {
+      try {
+        const formData = new FormData();
+        formData.append('total', this.form.side1);
+        formData.append('day', this.form.side2);
+        formData.append('arriveMoney', this.form.side3);
+        const response = await axios.post('http://8.130.47.29:8000/Commission/', formData,{
+           headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+        });
+        console.log('Response data:', response.data);
+        this.factor = response.data.factor;
+        this.salary = response.data.salary;
+        const message = response.data.message;
+        const result = parseFloat(response.data.salary)
+        if(result<0)
+        {
+          ElMessage.warning(message)
+        }else {
+          ElMessage.success(message);
+        }
+      } catch (error) {
+        console.error('Error submitting form:', error);
+      }
+    }
   }
 }
 </script>

@@ -24,21 +24,22 @@
             </el-header>
             <el-main>
               <el-menu
-                  default-active="2"
+                  default-active="1-3"
                   class="el-menu-vertical-demo"
                   style="display: flex;flex-wrap: wrap;border-right: 0"
+                  @select="handleSelect"
               >
                 <el-sub-menu index="1">
                   <template #title>
-                    <span style="font-size: large">Navigator One</span>
+                    <span style="font-size: large">作业测试</span>
                   </template>
                   <el-menu-item-group>
-                    <el-menu-item index="1-1">item one</el-menu-item>
-                    <el-menu-item index="1-2">item two</el-menu-item>
-                    <el-menu-item index="1-3">item two</el-menu-item>
-                    <el-menu-item index="1-4">item two</el-menu-item>
-                    <el-menu-item index="1-5">item two</el-menu-item>
-                    <el-menu-item index="1-6">item two</el-menu-item>
+                     <el-menu-item index="1-1">判断三角形类型</el-menu-item>
+                    <el-menu-item index="1-2">万年历问题</el-menu-item>
+                    <el-menu-item index="1-3">电脑销售问题</el-menu-item>
+                    <el-menu-item index="1-4">电信收费问题</el-menu-item>
+                    <el-menu-item index="1-5">程序图构建</el-menu-item>
+                    <el-menu-item index="1-6">佣金值计算</el-menu-item>
                   </el-menu-item-group>
                 </el-sub-menu>
                 <el-menu-item index="2">
@@ -99,13 +100,13 @@
                         label-position="top"
                     >
                       <el-form-item label="销售的主机数目">
-                        <el-input/>
+                        <el-input v-model.number="form.side1"/>
                       </el-form-item>
                       <el-form-item label="销售的显示器数目">
-                        <el-input/>
+                        <el-input v-model.number="form.side2"/>
                       </el-form-item>
                       <el-form-item label="销售的外设数目">
-                        <el-input  />
+                        <el-input v-model.number="form.side3" />
                       </el-form-item>
                     </el-form>
                     <template #footer>
@@ -115,9 +116,9 @@
                           label-position="top"
                       >
                         <el-form-item label="返回的佣金是">
-                          <el-input/>
+                           <el-input v-model="salary" readonly/>
                         </el-form-item>
-                        <el-button type="warning" plain>Warning</el-button>
+                        <el-button type="primary"  @click="submitForm">Submit</el-button>
                       </el-form>
                     </template>
                   </el-card>
@@ -133,10 +134,49 @@
 
 
 <script>
+import axios from "axios";
+import { ElMessage } from 'element-plus';
 export default {
   name: 'ExThree',
   props: {
     msg: String
+  },
+  data() {
+    return {
+      form: {
+        side1: '',
+        side2: '',
+        side3: ''
+      },
+      salary: '',
+    };
+  },
+  methods: {
+    async submitForm() {
+      try {
+        const formData = new FormData();
+        formData.append('host', this.form.side1);
+        formData.append('monitor', this.form.side2);
+        formData.append('peripheral', this.form.side3);
+        const response = await axios.post('http://8.130.47.29:8000/Computer/', formData,{
+           headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+        });
+        console.log('Response data:', response.data);
+        this.salary = response.data.result;
+        const message = response.data.message;
+        const result = parseInt(this.salary)
+        if(result<0)
+        {
+          ElMessage.warning(message)
+        }else {
+          ElMessage.success(message);
+        }
+      } catch (error) {
+        console.error('Error submitting form:', error);
+      }
+    }
   }
 }
 </script>
